@@ -8,9 +8,16 @@ namespace Combinator
 {
     class Program
     {
-        public static void PrintResult(IEnumerable<int> result)
+        static void PrintIndent(int TabCount)
         {
-            foreach (int number in result)
+            for (int i = 0; i < TabCount; i++)
+            {
+                Console.Write("    ");
+            }
+        }
+        static void PrintResult<T>(IEnumerable<T> result)
+        {
+            foreach (T number in result)
             {
                 Console.Write("{0} ", number);
             }
@@ -20,13 +27,40 @@ namespace Combinator
         static void Main(string[] args)
         {
             //TestCombination();
-            TestPermutation();
+            //TestPermutation();
+
+            TestSystem();
+        }
+
+        static void TestSystem()
+        {
+            var DoorIndices = new int[] { 0, 1, 2, 3, 4 };
+            var Outgoing = new string[] { "R", "C" };
+
+            var combinator = new Combination<int>(DoorIndices, Outgoing.Length);
+            while (combinator.CanRun)
+            {
+                int[] Selection = combinator.Execute();
+                PrintResult(Selection);
+
+                var permutation = new Permutation<string>(Outgoing);
+                while (permutation.CanPermute)
+                {
+                    permutation.Permutate();
+                    PrintIndent(1);
+                    PrintResult(permutation.Data);
+                }
+
+                Console.WriteLine();
+            }
+
+
         }
 
         static void TestCombination()
         {
             var data = new int[] { 1, 2, 3, 4, 5 };
-            var combinator = new Combination(data, 3);
+            var combinator = new Combination<int>(data, 3);
             while (combinator.CanRun)
             {
                 int[] selection = combinator.Execute();
@@ -36,11 +70,16 @@ namespace Combinator
 
         static void TestPermutation()
         {
-            var data = new int[] { 1, 2, 3 };
-            var permutation = new Permutation(data);
+            //var data = new int[] { 1, 2, 3 };
+            //var permutation = new Permutation<int>(data);
+
+            var data = new string[] { "R", "R", "C" };
+            var permutation = new Permutation<string>(data);
+
             while (permutation.CanPermute)
             {
                 permutation.Permutate();
+                PrintIndent(1);
                 PrintResult(permutation.Data);
             }
         }

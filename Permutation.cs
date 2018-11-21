@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace Combinator
 {
-    class Permutation
+    class Permutation<T> where T : IComparable
     {
-        int[] data;
+        T[] data;
         int K = -1;
         int L = -1;
         bool first = true;
@@ -18,12 +18,12 @@ namespace Combinator
             get { return first || K >= 0; }
         }
 
-        public int[] Data
+        public T[] Data
         {
             get { return data; }
         }
 
-        public Permutation(int[] data)
+        public Permutation(T[] data)
         {
             this.data = data;
             Array.Sort(this.data);
@@ -34,7 +34,7 @@ namespace Combinator
             K = -1;
             for (int k = 0; k + 1 < data.Length; k++)
             {
-                if (data[k] < data[k + 1])
+                if (data[k].CompareTo(data[k + 1]) < 0)
                 {
                     K = k;
                 }
@@ -44,7 +44,7 @@ namespace Combinator
             {
                 for (int l = K + 1; l < data.Length; l++)
                 {
-                    if (data[K] < data[l])
+                    if (data[K].CompareTo(data[l]) < 0)
                     {
                         L = l;
                     }
@@ -64,7 +64,7 @@ namespace Combinator
 
         void Swap(int a, int b)
         {
-            int t = data[a];
+            T t = data[a];
             data[a] = data[b];
             data[b] = t;
         }        

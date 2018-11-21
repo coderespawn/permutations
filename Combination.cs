@@ -6,10 +6,17 @@ using System.Threading.Tasks;
 
 namespace Combinator
 {
-    class Combination
+    class Combination<T>
     {
-        int[] data;
+        T[] data;
         int selectionCount;
+
+        struct StackState
+        {
+            public T[] buffer;
+            public int startIndex;
+        }
+
         Stack<StackState> stack = new Stack<StackState>();
 
         public bool CanRun
@@ -18,25 +25,19 @@ namespace Combinator
         }
 
 
-        public Combination(int[] data, int selectionCount)
+        public Combination(T[] data, int selectionCount)
         {
             this.data = data;
             this.selectionCount = selectionCount;
 
             stack.Push(new StackState
             {
-                buffer = new int[0],
+                buffer = new T[0],
                 startIndex = 0
             });
         }
 
-        struct StackState
-        {
-            public int[] buffer;
-            public int startIndex;
-        }
-
-        public int[] Execute()
+        public T[] Execute()
         {
             while (stack.Count > 0)
             {
@@ -52,7 +53,7 @@ namespace Combinator
                     int endIndex = data.Length - itemsLeft;
                     for (int i = top.startIndex; i < endIndex; i++)
                     {
-                        var nextBuffer = new List<int>(top.buffer);
+                        var nextBuffer = new List<T>(top.buffer);
                         nextBuffer.Add(data[i]);
                         var nextState = new StackState
                         {
