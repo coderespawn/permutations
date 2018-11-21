@@ -4,20 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Combination
+namespace Combinator
 {
-    class Combinator
+    class Program
     {
-        int[] data;
-        int selectionCount;
-
-        public Combinator(int[] data, int selectionCount)
-        {
-            this.data = data;
-            this.selectionCount = selectionCount;
-        }
-
-        void PrintResult(IEnumerable<int> result)
+        public static void PrintResult(IEnumerable<int> result)
         {
             foreach (int number in result)
             {
@@ -26,85 +17,32 @@ namespace Combination
             Console.WriteLine();
         }
 
-        public void PrintRecursive(Stack<int> buffer, int startIndex)
-        {
-            if (buffer.Count == selectionCount)
-            {
-                // Print and return
-                var result = buffer.ToArray().Reverse();
-                PrintResult(result);
-                return;
-            }
-
-
-            int bufferLength = buffer.Count;
-            int itemsLeft = selectionCount - bufferLength - 1;
-            int endIndex = data.Length - itemsLeft;
-            for (int i = startIndex; i < endIndex; i++)
-            {
-                buffer.Push(data[i]);
-                PrintRecursive(buffer, i + 1);
-                buffer.Pop();
-            }
-        }
-
-        public void Print()
-        {
-            PrintRecursive(new Stack<int>(), 0);
-
-        }
-
-        struct StackState
-        {
-            public int[] buffer;
-            public int startIndex;
-        }
-
-        public void PrintStack()
-        {
-            var stack = new Stack<StackState>();
-
-            stack.Push(new StackState
-            {
-                buffer = new int[0],
-                startIndex = 0
-            });
-
-            while (stack.Count > 0)
-            {
-                var top = stack.Pop();
-                if (top.buffer.Length == selectionCount)
-                {
-                    PrintResult(top.buffer);
-                }
-                else
-                {
-                    int bufferLength = top.buffer.Length;
-                    int itemsLeft = selectionCount - bufferLength - 1;
-                    int endIndex = data.Length - itemsLeft;
-                    for (int i = top.startIndex; i < endIndex; i++)
-                    {
-                        var nextBuffer = new List<int>(top.buffer);
-                        nextBuffer.Add(data[i]);
-                        var nextState = new StackState
-                        {
-                            buffer = nextBuffer.ToArray(),
-                            startIndex = i + 1
-                        };
-                        stack.Push(nextState);
-                    }
-                }
-            }
-        }
-        
-    }
-
-    class Program
-    {
         static void Main(string[] args)
         {
-            var combinator = new Combinator(new int[] { 1, 2, 3, 4, 5 }, 1);
-            combinator.PrintStack();
+            //TestCombination();
+            TestPermutation();
+        }
+
+        static void TestCombination()
+        {
+            var data = new int[] { 1, 2, 3, 4, 5 };
+            var combinator = new Combination(data, 3);
+            while (combinator.CanRun)
+            {
+                int[] selection = combinator.Execute();
+                PrintResult(selection);
+            }
+        }
+
+        static void TestPermutation()
+        {
+            var data = new int[] { 1, 2, 3 };
+            var permutation = new Permutation(data);
+            while (permutation.CanPermute)
+            {
+                permutation.Permutate();
+                PrintResult(permutation.Data);
+            }
         }
     }
 }
